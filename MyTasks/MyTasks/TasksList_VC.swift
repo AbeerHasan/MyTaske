@@ -10,8 +10,8 @@ import UIKit
 import CoreData
 
 
-let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-var currentTasksList = Type()
+//let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+var currentTasksList = "All"
 
 class TasksList_VC: UIViewController {
 
@@ -23,12 +23,14 @@ class TasksList_VC: UIViewController {
  
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setUpList()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(getTasks), name: NSNotification.Name(notName), object: nil)
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -46,15 +48,16 @@ class TasksList_VC: UIViewController {
     }
     
     @objc func getTasks(){
+        
         self.listsMenuView.isHidden = true
         var format = "isDone = No"
         
-        if currentTasksList.name == "Finished" {
+        if currentTasksList == "Finished" {
             format = "isDone = Yes"
-        }else if currentTasksList.name == "All" {
+        }else if currentTasksList == "All" {
             format = "isDone = No"
-        }else if currentTasksList.name != nil{
-            format = "type = '\(currentTasksList)' AND isDone = No "
+        }else {
+            format = "type.name CONTAINS '\(currentTasksList)' AND isDone = No "
         }
         
         fetchTasks(format: format)
@@ -90,9 +93,8 @@ class TasksList_VC: UIViewController {
             let textField = alert.textFields![0]
             let newTask = Task(context: self.context)
             newTask.content = textField.text
-            
-            newTask.type = currentTasksList
-            
+            newTask.type = self.getCurrentListType()
+            //newTask.type = currentTasksList
             
             do {
                 try self.context.save()
@@ -108,6 +110,22 @@ class TasksList_VC: UIViewController {
         alert.addAction(addButton)
         alert.addAction(cancelButton)
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func getCurrentListType() -> Type{
+        var type = Type()
+        do {
+            let request = Type.fetchRequest() as NSFetchRequest<Type>
+            let predicate =  NSPredicate(format: "name CONTAINS '\(currentTasksList)'")
+            request.predicate = predicate
+                   
+            type = try context.fetch(request)[0]
+            
+        }catch {
+            print("Error")
+        }
+        
+        return type
     }
 }
 

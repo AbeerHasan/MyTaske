@@ -44,6 +44,7 @@ class TypesList_VC: UIViewController {
         }
     }
     
+    
     @IBAction func addTypeButtonClicked(_ sender: Any) {
         if typeNameTextField.text != " " && typeNameTextField.text != "" {
             let newType = Type(context: self.context)
@@ -88,7 +89,7 @@ extension TypesList_VC : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        currentTasksList = lists![indexPath.row]
+        currentTasksList = lists![indexPath.row].name ?? "All"
         
         NotificationCenter.default.post(name: NSNotification.Name(notName), object: currentTasksList)
     }
