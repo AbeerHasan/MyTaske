@@ -103,12 +103,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2705.7971014492755" y="117.85714285714285"/>
+            <point key="canvasLocation" x="4342" y="99"/>
         </scene>
-        <!--Tasks ListVC-->
+        <!--Tasks Check ListVC-->
         <scene sceneID="YbA-xK-2E6">
             <objects>
-                <viewController id="7eM-L8-9Sg" customClass="TasksList_VC" customModule="MyTasks" sceneMemberID="viewController">
+                <viewController id="7eM-L8-9Sg" customClass="TasksCheckList_VC" customModule="MyTasks" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="4hH-gT-q8X">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -160,6 +160,10 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x7g-pz-cqN">
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                             <containerView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HVV-oD-uCK">
                                 <rect key="frame" x="20" y="88" width="196" height="774"/>
                                 <connections>
@@ -169,12 +173,16 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="h8A-i5-T5J" firstAttribute="trailing" secondItem="x7g-pz-cqN" secondAttribute="trailing" id="8y6-RE-jVb"/>
                             <constraint firstItem="y1p-b1-gWk" firstAttribute="leading" secondItem="h8A-i5-T5J" secondAttribute="leading" id="AkT-ec-IrQ"/>
                             <constraint firstItem="h8A-i5-T5J" firstAttribute="bottom" secondItem="HVV-oD-uCK" secondAttribute="bottom" id="BNB-JL-Zbo"/>
                             <constraint firstItem="HVV-oD-uCK" firstAttribute="leading" secondItem="h8A-i5-T5J" secondAttribute="leading" constant="20" id="ZRy-yj-CGI"/>
                             <constraint firstItem="HVV-oD-uCK" firstAttribute="width" secondItem="h8A-i5-T5J" secondAttribute="width" multiplier="0.47343" id="aFR-Rf-kPX"/>
+                            <constraint firstItem="x7g-pz-cqN" firstAttribute="leading" secondItem="h8A-i5-T5J" secondAttribute="leading" id="b2O-qF-N5v"/>
                             <constraint firstItem="h8A-i5-T5J" firstAttribute="trailing" secondItem="y1p-b1-gWk" secondAttribute="trailing" id="bII-et-hcV"/>
                             <constraint firstItem="h8A-i5-T5J" firstAttribute="bottom" secondItem="y1p-b1-gWk" secondAttribute="bottom" id="eO9-fA-tV6"/>
+                            <constraint firstItem="h8A-i5-T5J" firstAttribute="bottom" secondItem="x7g-pz-cqN" secondAttribute="bottom" id="gDK-1L-uR7"/>
+                            <constraint firstItem="x7g-pz-cqN" firstAttribute="top" secondItem="h8A-i5-T5J" secondAttribute="top" id="hko-v0-p1l"/>
                             <constraint firstItem="HVV-oD-uCK" firstAttribute="top" secondItem="h8A-i5-T5J" secondAttribute="top" id="pGf-sz-zpi"/>
                             <constraint firstItem="y1p-b1-gWk" firstAttribute="top" secondItem="h8A-i5-T5J" secondAttribute="top" id="q5x-rT-th4"/>
                         </constraints>
@@ -197,6 +205,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="listsMenuView" destination="HVV-oD-uCK" id="5xB-5v-rC9"/>
+                        <outlet property="menueContainerView" destination="x7g-pz-cqN" id="7Cz-NF-73w"/>
                         <outlet property="tasksTableView" destination="y1p-b1-gWk" id="wZD-GH-riz"/>
                     </connections>
                 </viewController>
@@ -258,7 +267,7 @@
                                     <color key="backgroundColor" red="0.96862745098039216" green="0.96470588235294119" blue="0.96470588235294119" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </stackView>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ListCell" rowHeight="60" id="DUd-UF-rgR" customClass="ListsTableViewCell" customModule="MyTasks" customModuleProvider="target">
+                                    <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ListCell" rowHeight="60" id="DUd-UF-rgR" customClass="TypesListTableCell" customModule="MyTasks" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="DUd-UF-rgR" id="gBf-1J-9g9">
@@ -293,7 +302,7 @@
                         <constraints>
                             <constraint firstItem="AoO-IM-0AY" firstAttribute="top" secondItem="TQP-xn-COO" secondAttribute="top" id="Ydd-ho-NLe"/>
                             <constraint firstItem="AoO-IM-0AY" firstAttribute="leading" secondItem="TQP-xn-COO" secondAttribute="leading" id="ccO-GD-gtA"/>
-                            <constraint firstItem="FBb-MS-xGW" firstAttribute="bottom" secondItem="AoO-IM-0AY" secondAttribute="bottom" id="nCC-qP-4SE"/>
+                            <constraint firstItem="FBb-MS-xGW" firstAttribute="bottom" secondItem="AoO-IM-0AY" secondAttribute="bottom" id="hPJ-Uq-SCb"/>
                             <constraint firstItem="AoO-IM-0AY" firstAttribute="width" secondItem="TQP-xn-COO" secondAttribute="width" id="wyv-J7-cJ6"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="FBb-MS-xGW"/>

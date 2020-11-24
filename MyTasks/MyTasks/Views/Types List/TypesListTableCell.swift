@@ -8,10 +8,13 @@
 
 import UIKit
 
-class ListsTableViewCell: UITableViewCell {
-
+class TypesListTableCell: UITableViewCell {
+    
+    //--- Outlets----------------------------------------
     @IBOutlet weak var listNameLabel: UILabel!
     
+    
+    //--- View Methods------------------------------------
     override func awakeFromNib() {
         super.awakeFromNib()
     }
@@ -20,6 +23,7 @@ class ListsTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
+    //--- Helper functions--------------------------------
     func configureCell(name: String){
         listNameLabel.text = name
     }
