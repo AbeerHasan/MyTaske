@@ -12,33 +12,47 @@ import CoreData
 var currentTasksList = "All"
 
 class TasksCheckList_VM {
+    
     //---- Variables -----------------------------------------------------------
     let coreDataManager: CoreDataProtocol
+    private var tasks: [Task] = [Task]()
     
-    private static var tasks: [Task]  = [Task]()
-    
-    private var taskCellViewModels: [TasksTableCell_VM] = [TasksTableCell_VM]()
-    
+    private var taskCellViewModels: [TasksTableCell_VM] = [TasksTableCell_VM]() {
+        didSet {
+             self.reloadTableViewClosure?()
+        }
+    }
     var numberOfCells: Int {
            return taskCellViewModels.count
        }
+     var reloadTableViewClosure: (()->())?
     
     init(coreDataManager: CoreDataProtocol = CoreDataManager()) {
         self.coreDataManager = coreDataManager
+          NotificationCenter.default.addObserver(self , selector: #selector(reloadTasks), name: NSNotification.Name(typeNotificationName), object: nil)
+        print("init Tasks \(tasks)")
+        
     }
     
     //--- Tasks TableViw and Cell Setup Functions -------------------------------
     
-    func createTaskCellViewModel(task: Task, index: Int) -> TasksTableCell_VM {
-        return TasksTableCell_VM(index: index, content: task.content, isDone: task.isDone, type: task.type)
+    func createTaskCellViewModel(task: Task) -> TasksTableCell_VM {
+        return TasksTableCell_VM(task: task, content: task.content, isDone: task.isDone, type: task.type)
     }
     
     func getCellViewModel(at index: Int) -> TasksTableCell_VM {
-        return taskCellViewModels[index]
+        let taskCell_VM = taskCellViewModels[index]
+       
+        return taskCell_VM
     }
     
     //-------------------
-    @objc func getTasks(completion: @escaping ([Task] , String?) -> ()){
+    @objc func reloadTasks(){
+        getTasks { (tasks, error) in
+            self.reloadTableViewClosure?()
+        }
+    }
+    func getTasks(completion: @escaping ([Task] , String?) -> ()){
         var format = "isDone = No"
         
         if currentTasksList == "Finished" {
@@ -50,29 +64,24 @@ class TasksCheckList_VM {
         }
         
         self.coreDataManager.fetchTasks(format: format) { (tasks, error) in
-            TasksCheckList_VM.tasks = tasks
+            self.tasks = tasks
             var taskCellViewModels = [TasksTableCell_VM]()
             var index = 0
             for task in tasks {
-                taskCellViewModels.append(TasksTableCell_VM(index: index, content: task.content, isDone: task.isDone, type: task.type))
+                taskCellViewModels.append(self.createTaskCellViewModel(task: task))
                 index += 1
             }
             self.taskCellViewModels = taskCellViewModels
             completion(tasks,error)
         }
     }
-    func updateTask(index: Int, content: String, isDone: Bool ){
-        let task = TasksCheckList_VM.tasks[index]
-        task.content = content
-        task.isDone = isDone
-        
-        saveData()
-        
-    }
+    
     func addTask(content: String, completion: @escaping (_ error: String) -> ()){
         if content != "" && content != " " {
-            self.coreDataManager.addTask(content: content, typeName: currentTasksList) { (error) in
+            self.coreDataManager.addTask(content: content, typeName: currentTasksList) { (task,error) in
                 completion("********** \(error)")
+                self.tasks.append(task)
+                self.taskCellViewModels.append(self.createTaskCellViewModel(task: task))
             }
         }else {
             completion("Please write something")
@@ -80,8 +89,7 @@ class TasksCheckList_VM {
     }
     
     func removeTask(index: Int){
-       
-        coreDataManager.removeTask(task: TasksCheckList_VM.tasks[index]) { (error) in
+        coreDataManager.removeTask(task: self.tasks[index]) { (error) in
             print(error)
         }
         

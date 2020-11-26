@@ -21,14 +21,11 @@ class TasksTableViewCell: UITableViewCell {
     @IBOutlet weak var checkButton: UIButton!
     
     //--- Variables --------------------------------------
-    lazy var viewModel: TasksCheckList_VM = {
-        return TasksCheckList_VM()
-    }()
     
-    //----------------------------------------------------------
     var taskTableCell_VM : TasksTableCell_VM? {
         didSet {
             taskContent.text = taskTableCell_VM?.content
+            
             checkButtonSetup()
         }
     }
@@ -45,8 +42,9 @@ class TasksTableViewCell: UITableViewCell {
     
     //--- Actions ----------------------------------------
     @IBAction func checkButtonClicked(_ sender: Any) {
-        viewModel.updateTask(index: taskTableCell_VM?.index ?? 0, content: taskTableCell_VM?.content ?? "", isDone: !(taskTableCell_VM?.isDone ?? true))
+       // viewModel.updateTask(index: taskTableCell_VM?.index ?? 0, content: taskTableCell_VM?.content ?? "", isDone: !(taskTableCell_VM?.isDone ?? true))
         taskTableCell_VM?.updateTask(content: taskTableCell_VM?.content ?? "", isdone: !(taskTableCell_VM?.isDone ?? true))
+        
         checkButtonSetup()
     }
     

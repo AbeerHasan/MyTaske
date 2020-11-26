@@ -19,7 +19,7 @@ extension NSManagedObjectContext {
 
 protocol CoreDataProtocol {
     func fetchTasks(format: String, completion: @escaping ([Task], String?) -> ())
-    func addTask(content: String, typeName: String, completion: @escaping (String) -> ())
+    func addTask(content: String, typeName: String, completion: @escaping (Task, String) -> ())
     func removeTask(task: Task, completion: @escaping (String) -> ())
     func addType(name: String, completion: @escaping (String) -> ())
     func getCurrentListType(name: String) -> Type
@@ -50,13 +50,13 @@ final class CoreDataManager: CoreDataProtocol {
         }
     }
     
-    func addTask(content: String, typeName: String, completion: @escaping (String) -> ()) {
+    func addTask(content: String, typeName: String, completion: @escaping (Task, String) -> ()) {
         let newTask = Task(context: self.managedContext)
         newTask.content = content
         newTask.type = self.getCurrentListType(name: typeName)
             
         saveContext { (error) in
-            completion(error)
+            completion(newTask,error)
             
         }
     }
@@ -73,7 +73,10 @@ final class CoreDataManager: CoreDataProtocol {
     func addType(name: String, completion: @escaping (String) -> ()){
         let newType = Type(context: self.managedContext)
         newType.name = name
+        
+        
         self.saveContext { (error) in
+            
             completion(error)
         }
     }
@@ -115,6 +118,8 @@ final class CoreDataManager: CoreDataProtocol {
     func saveContext(completion: @escaping (String) -> ()){
           do {
             try self.managedContext.save()
+            
+            completion("")
           }catch {
             completion(error.localizedDescription)
           }

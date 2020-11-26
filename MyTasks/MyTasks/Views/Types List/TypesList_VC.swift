@@ -25,8 +25,8 @@ class TypesList_VC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
          setUp()
-        let tap = UITapGestureRecognizer(target: self, action: #selector(hideMenue))
-        self.typesTableView.backgroundView?.addGestureRecognizer(tap)
+      //  let tap = UITapGestureRecognizer(target: self, action: #selector(hideMenue))
+        //self.typesTableView.backgroundView?.addGestureRecognizer(tap)
     }
     
     @objc func hideMenue(){
@@ -35,7 +35,9 @@ class TypesList_VC: UIViewController {
     //--- Actions ----------------------------------------
     @IBAction func addTypeButtonClicked(_ sender: Any) {
         if typeNameTextField.text != " " && typeNameTextField.text != "" {
-           // CoreDataManager.shared.addType(name: typeNameTextField.text!)
+            coreDataManager.addType(name: typeNameTextField.text!) { (error) in
+                print(error)
+            }
             getAllTypes()
         }
         typeNameTextField.text = ""
@@ -46,6 +48,7 @@ class TypesList_VC: UIViewController {
         typesTableView.delegate = self
         typesTableView.dataSource = self
         getAllTypes()
+        
     }
     
     func getAllTypes(){
@@ -55,6 +58,9 @@ class TypesList_VC: UIViewController {
             print(error ?? "error in getting types")
             DispatchQueue.main.async {
                 self.typesTableView.reloadData()
+                var frame = self.typesTableView.frame;
+                frame.size.height = self.typesTableView.contentSize.height;
+                self.typesTableView.frame = frame;
             }
         }
      }
@@ -77,7 +83,9 @@ extension TypesList_VC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completion) in
-         //   CoreDataManager.shared.removeType(type: self.lists![indexPath.row])
+            self.coreDataManager.removeType(type: self.lists![indexPath.row]) { (error) in
+                print(error ?? "nothing")
+            }
             self.getAllTypes()
         }
         return UISwipeActionsConfiguration(actions: [action])

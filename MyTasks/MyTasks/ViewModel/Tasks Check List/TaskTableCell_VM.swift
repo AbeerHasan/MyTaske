@@ -10,13 +10,20 @@ import Foundation
 import CoreData
 
 struct TasksTableCell_VM{
-    let index: Int
+    let task: Task
     var content: String
     var isDone: Bool = false
     let type: Type?
     
+   
     mutating func updateTask(content: String, isdone: Bool){
         self.content = content
         self.isDone = isdone
+        task.content = content
+        task.isDone = isdone
+        let coreDataManager = CoreDataManager()
+        coreDataManager.saveContext { (error) in
+            print(error)
+        }
     }
 }
