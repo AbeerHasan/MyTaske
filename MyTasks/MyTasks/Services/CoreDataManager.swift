@@ -21,7 +21,7 @@ protocol CoreDataProtocol {
     func fetchTasks(format: String, completion: @escaping ([Task], String?) -> ())
     func addTask(content: String, typeName: String, completion: @escaping (Task, String) -> ())
     func removeTask(task: Task, completion: @escaping (String) -> ())
-    func addType(name: String, completion: @escaping (String) -> ())
+    func addType(name: String, completion: @escaping (Type, String) -> ())
     func getCurrentListType(name: String) -> Type
     func getAllTypes(completion: @escaping ([Type], String?) -> ())
     func removeType(type: Type, completion: @escaping (String?) -> ())
@@ -70,14 +70,14 @@ final class CoreDataManager: CoreDataProtocol {
     }
     
     //---- Type Functions -----------------------------------------------------------
-    func addType(name: String, completion: @escaping (String) -> ()){
+    func addType(name: String, completion: @escaping (Type, String) -> ()){
         let newType = Type(context: self.managedContext)
         newType.name = name
         
         
         self.saveContext { (error) in
             
-            completion(error)
+            completion(newType, error)
         }
     }
     

@@ -65,22 +65,51 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		423AB61B2569A8E60046A217 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				42E46E21256C2588005D97AD /* Types List */,
-				42E46E22256C25BD005D97AD /* Tasks Check List */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		423AB61C2569A8FB0046A217 /* ViewModel */ = {
+		423AB61C2569A8FB0046A217 /* View_ViewModel */ = {
 			isa = PBXGroup;
 			children = (
 				42E46E20256C2233005D97AD /* Types List */,
+				426DFED62571413F0019D3AB /* ViewControler */,
 				42E46E1F256C2215005D97AD /* Tasks Check List */,
 			);
+			path = View_ViewModel;
+			sourceTree = "<group>";
+		};
+		426DFED52571412F0019D3AB /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				42E46E1B256C21E5005D97AD /* TypesList_VM.swift */,
+				42E46E1D256C2205005D97AD /* TypesListCell_VM.swift */,
+			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		426DFED62571413F0019D3AB /* ViewControler */ = {
+			isa = PBXGroup;
+			children = (
+				42A25A66255EFEFD0014E986 /* TypesList_VC.swift */,
+				420456F8255E3659009A4DF9 /* TypesListTableCell.swift */,
+			);
+			path = ViewControler;
+			sourceTree = "<group>";
+		};
+		426DFED7257141770019D3AB /* View Model */ = {
+			isa = PBXGroup;
+			children = (
+				423AB61D2569AAB00046A217 /* TasksCheckList_VM.swift */,
+				423AB6272569D12B0046A217 /* TaskTableCell_VM.swift */,
+			);
+			path = "View Model";
+			sourceTree = "<group>";
+		};
+		426DFED8257141830019D3AB /* View Controler */ = {
+			isa = PBXGroup;
+			children = (
+				42743FC3255DAE1D00D68FD6 /* TasksCheckList_VC.swift */,
+				42743FDE255E046100D68FD6 /* TasksTableViewCell.swift */,
+				420456F6255E09E9009A4DF9 /* AddTask_VC.swift */,
+			);
+			path = "View Controler";
 			sourceTree = "<group>";
 		};
 		42743FB3255DAE1D00D68FD6 = {
@@ -106,8 +135,7 @@
 				42743FBF255DAE1D00D68FD6 /* AppDelegate.swift */,
 				42743FDA255DB01C00D68FD6 /* Model */,
 				42743FDB255DB2EE00D68FD6 /* Services */,
-				423AB61C2569A8FB0046A217 /* ViewModel */,
-				423AB61B2569A8E60046A217 /* Views */,
+				423AB61C2569A8FB0046A217 /* View_ViewModel */,
 				42743FC5255DAE1D00D68FD6 /* Main.storyboard */,
 				42743FCD255DAE1F00D68FD6 /* LaunchScreen.storyboard */,
 				42743FCB255DAE1F00D68FD6 /* Assets.xcassets */,
@@ -139,8 +167,8 @@
 		42E46E1F256C2215005D97AD /* Tasks Check List */ = {
 			isa = PBXGroup;
 			children = (
-				423AB61D2569AAB00046A217 /* TasksCheckList_VM.swift */,
-				423AB6272569D12B0046A217 /* TaskTableCell_VM.swift */,
+				426DFED7257141770019D3AB /* View Model */,
+				426DFED8257141830019D3AB /* View Controler */,
 			);
 			path = "Tasks Check List";
 			sourceTree = "<group>";
@@ -148,29 +176,9 @@
 		42E46E20256C2233005D97AD /* Types List */ = {
 			isa = PBXGroup;
 			children = (
-				42E46E1B256C21E5005D97AD /* TypesList_VM.swift */,
-				42E46E1D256C2205005D97AD /* TypesListCell_VM.swift */,
+				426DFED52571412F0019D3AB /* ViewModel */,
 			);
 			path = "Types List";
-			sourceTree = "<group>";
-		};
-		42E46E21256C2588005D97AD /* Types List */ = {
-			isa = PBXGroup;
-			children = (
-				42A25A66255EFEFD0014E986 /* TypesList_VC.swift */,
-				420456F8255E3659009A4DF9 /* TypesListTableCell.swift */,
-			);
-			path = "Types List";
-			sourceTree = "<group>";
-		};
-		42E46E22256C25BD005D97AD /* Tasks Check List */ = {
-			isa = PBXGroup;
-			children = (
-				42743FC3255DAE1D00D68FD6 /* TasksCheckList_VC.swift */,
-				42743FDE255E046100D68FD6 /* TasksTableViewCell.swift */,
-				420456F6255E09E9009A4DF9 /* AddTask_VC.swift */,
-			);
-			path = "Tasks Check List";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

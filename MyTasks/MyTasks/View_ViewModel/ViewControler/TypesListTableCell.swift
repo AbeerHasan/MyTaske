@@ -13,6 +13,12 @@ class TypesListTableCell: UITableViewCell {
     //--- Outlets----------------------------------------
     @IBOutlet weak var listNameLabel: UILabel!
     
+    //--- Variables --------------------------------------
+    var typeTableCell_VM : TypesListCell_VM? {
+           didSet {
+            listNameLabel.text = typeTableCell_VM?.name
+           }
+       }
     
     //--- View Methods------------------------------------
     override func awakeFromNib() {
@@ -21,11 +27,6 @@ class TypesListTableCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-    }
-    
-    //--- Helper functions--------------------------------
-    func configureCell(name: String){
-        listNameLabel.text = name
     }
 
 }

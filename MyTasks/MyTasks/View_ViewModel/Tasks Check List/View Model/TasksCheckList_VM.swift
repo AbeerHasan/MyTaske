@@ -13,8 +13,9 @@ var currentTasksList = "All"
 
 class TasksCheckList_VM {
     
-    //---- Variables -----------------------------------------------------------
+//---- Variables -----------------------------------------------------------
     let coreDataManager: CoreDataProtocol
+    
     private var tasks: [Task] = [Task]()
     
     private var taskCellViewModels: [TasksTableCell_VM] = [TasksTableCell_VM]() {
@@ -22,10 +23,13 @@ class TasksCheckList_VM {
              self.reloadTableViewClosure?()
         }
     }
+    
     var numberOfCells: Int {
            return taskCellViewModels.count
-       }
-     var reloadTableViewClosure: (()->())?
+    }
+    
+    var reloadTableViewClosure: (()->())?
+    var hideAddButtonClousure: (() -> ())?
     
     init(coreDataManager: CoreDataProtocol = CoreDataManager()) {
         self.coreDataManager = coreDataManager
@@ -34,7 +38,7 @@ class TasksCheckList_VM {
         
     }
     
-    //--- Tasks TableViw and Cell Setup Functions -------------------------------
+//--- Tasks TableViw and Cell Setup Functions -------------------------------
     
     func createTaskCellViewModel(task: Task) -> TasksTableCell_VM {
         return TasksTableCell_VM(task: task, content: task.content, isDone: task.isDone, type: task.type)
@@ -46,12 +50,15 @@ class TasksCheckList_VM {
         return taskCell_VM
     }
     
-    //-------------------
     @objc func reloadTasks(){
         getTasks { (tasks, error) in
             self.reloadTableViewClosure?()
+            if currentTasksList == "Finished" {
+                 self.hideAddButtonClousure?()
+            }
         }
     }
+//--------------------------------------------
     func getTasks(completion: @escaping ([Task] , String?) -> ()){
         var format = "isDone = No"
         
@@ -91,9 +98,11 @@ class TasksCheckList_VM {
     func removeTask(index: Int){
         coreDataManager.removeTask(task: self.tasks[index]) { (error) in
             print(error)
+            self.tasks.remove(at: index)
+            self.taskCellViewModels.remove(at: index)
         }
-        
     }
+    
     func saveData(){
         self.coreDataManager.saveContext { (error) in
             print(error)

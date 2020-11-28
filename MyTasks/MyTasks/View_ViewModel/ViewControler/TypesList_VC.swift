@@ -17,28 +17,25 @@ class TypesList_VC: UIViewController {
     @IBOutlet weak var typesTableView: UITableView!
     @IBOutlet weak var typeNameTextField: UITextField!
 
+    @IBOutlet weak var menueContainerView: UIView!
     //--- Variables --------------------------------------
-    var lists: [Type]?
-    var coreDataManager: CoreDataProtocol  = CoreDataManager()
+    lazy var viewModel: TypesList_VM = {
+        return TypesList_VM()
+    }()
     
     //--- View Methods------------------------------------
     override func viewDidLoad() {
         super.viewDidLoad()
-         setUp()
-      //  let tap = UITapGestureRecognizer(target: self, action: #selector(hideMenue))
-        //self.typesTableView.backgroundView?.addGestureRecognizer(tap)
+         
+        setUp()
     }
     
-    @objc func hideMenue(){
-        self.view.isHidden = true
-    }
     //--- Actions ----------------------------------------
     @IBAction func addTypeButtonClicked(_ sender: Any) {
         if typeNameTextField.text != " " && typeNameTextField.text != "" {
-            coreDataManager.addType(name: typeNameTextField.text!) { (error) in
+            viewModel.addType(name: typeNameTextField.text!) { (error) in
                 print(error)
             }
-            getAllTypes()
         }
         typeNameTextField.text = ""
     }
@@ -47,35 +44,41 @@ class TypesList_VC: UIViewController {
     func setUp(){
         typesTableView.delegate = self
         typesTableView.dataSource = self
-        getAllTypes()
         
-    }
-    
-    func getAllTypes(){
-        
-        coreDataManager.getAllTypes { (types, error) in
-            self.lists = types
-            print(error ?? "error in getting types")
+        viewModel.reloadTableViewClosure = { [weak self] () in
             DispatchQueue.main.async {
-                self.typesTableView.reloadData()
-                var frame = self.typesTableView.frame;
-                frame.size.height = self.typesTableView.contentSize.height;
-                self.typesTableView.frame = frame;
+                self?.typesTableView.reloadData()
+                var frame = self!.typesTableView.frame;
+                frame.size.height = self!.typesTableView.contentSize.height
+                self?.typesTableView.frame = frame
             }
         }
-     }
+        
+        viewModel.getTypes { (types, error) in
+            print(error ?? "Error in getting Types")
+        }
+        //---- Hide the menue after clicking on the screen---
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hideMenue))
+        self.menueContainerView.addGestureRecognizer(tap)
+
+        }
+        
+    @objc func hideMenue(){
+        showHideMenuClosure?(false)
+    }
+    
 }
 
 //--- extensions-------------------------------------------------------
 
 extension TypesList_VC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return lists?.count ?? 0
+        return viewModel.numberOfCells
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath) as! TypesListTableCell
-        cell.configureCell(name: lists?[indexPath.row].name ?? "Finished")
+        cell.typeTableCell_VM = viewModel.getCellViewModel(at: indexPath.row)
         return cell
     }
     
@@ -83,17 +86,12 @@ extension TypesList_VC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completion) in
-            self.coreDataManager.removeType(type: self.lists![indexPath.row]) { (error) in
-                print(error ?? "nothing")
-            }
-            self.getAllTypes()
+            self.viewModel.removeType(index: indexPath.row)
         }
         return UISwipeActionsConfiguration(actions: [action])
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        currentTasksList = lists![indexPath.row].name
-    
-       NotificationCenter.default.post(name: NSNotification.Name(typeNotificationName), object: nil)
+        viewModel.cellClicked(index: indexPath.row)
     }
 }
