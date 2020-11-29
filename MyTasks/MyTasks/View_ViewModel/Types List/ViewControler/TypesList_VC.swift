@@ -17,6 +17,7 @@ class TypesList_VC: UIViewController {
     @IBOutlet weak var typesTableView: UITableView!
     @IBOutlet weak var typeNameTextField: UITextField!
 
+    @IBOutlet weak var tableViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var menueContainerView: UIView!
 
 //--- Variables --------------------------------------
@@ -49,9 +50,7 @@ class TypesList_VC: UIViewController {
         viewModel.reloadTableViewClosure = { [weak self] () in
             DispatchQueue.main.async {
                 self?.typesTableView.reloadData()
-                var frame = self!.typesTableView.frame;
-                frame.size.height = self!.typesTableView.contentSize.height
-                self?.typesTableView.frame = frame
+                self?.tableViewHeightConstraint.constant = self!.typesTableView.contentSize.height
             }
         }
         
@@ -64,6 +63,7 @@ class TypesList_VC: UIViewController {
     }
         
     @objc func hideMenue(){
+        self.dismiss(animated: false, completion: nil)
         showHideMenuClosure?(false)
     }
     
@@ -85,13 +85,24 @@ extension TypesList_VC : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completion) in
+        let action = UIContextualAction(style: .normal, title: "Delete") { (action, view, completion) in
             self.viewModel.removeType(index: indexPath.row)
         }
         return UISwipeActionsConfiguration(actions: [action])
     }
     
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.cellClicked(index: indexPath.row)
+        self.dismiss(animated: false, completion: nil)
     }
+    
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.transform = CGAffineTransform(translationX: cell.contentView.frame.width, y: -tableView.contentSize.height)
+          
+          UIView.animate(withDuration: 0.3, delay: 0.01 * Double(indexPath.row), animations: {
+              cell.transform = CGAffineTransform(translationX: cell.contentView.frame.width, y: cell.contentView.frame.height)
+          })
+      }
 }

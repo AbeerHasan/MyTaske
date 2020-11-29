@@ -18,7 +18,6 @@ class TasksCheckList_VC: UIViewController {
 
 //--- Outlets----------------------------------------
     @IBOutlet weak var tasksTableView: UITableView!
-    @IBOutlet weak var listsMenuView: UIView!
    
     @IBOutlet weak var addTaskButton: UIButton!
     @IBOutlet weak var listNameItem: UILabel!
@@ -101,7 +100,7 @@ class TasksCheckList_VC: UIViewController {
                 if !flage {
                     self?.currentMenuStatus.changeState()
                 }
-                self?.show_hide_Menu()
+                self?.showMenu()
             }
         }
     }
@@ -112,11 +111,11 @@ class TasksCheckList_VC: UIViewController {
         }
     }
     
-    func show_hide_Menu(){
-          if currentMenuStatus == .closed{
-              listsMenuView.isHidden = true
-          }else {
-              listsMenuView.isHidden = false
+    func showMenu(){
+        if currentMenuStatus == .opened {
+            let storyBoard = UIStoryboard(name: "Main", bundle: Bundle.main)
+            let authVC = storyBoard.instantiateViewController(withIdentifier: "MenuList") as! TypesList_VC
+            present(authVC, animated: false, completion: nil) //showing the normal starting page under the authVC
           }
       }
 }
@@ -141,11 +140,18 @@ extension TasksCheckList_VC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completion) in
+        let action = UIContextualAction(style: .normal, title: "Delete") { (action, view, completion) in
             self.viewModel.removeTask(index: indexPath.row)
         }
         return UISwipeActionsConfiguration(actions: [action])
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.transform = CGAffineTransform(translationX: 0, y: cell.contentView.frame.width)
+          
+          UIView.animate(withDuration: 0.6, delay: 0.1 * Double(indexPath.row), animations: {
+              cell.transform = CGAffineTransform(translationX: cell.contentView.frame.width, y: cell.contentView.frame.height)
+          })
+      }
 }
 

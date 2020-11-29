@@ -16,7 +16,7 @@ class TasksTableViewCell: UITableViewCell {
     //--- Outlets----------------------------------------
     @IBOutlet weak var taskContent: UILabel!
     @IBOutlet weak var checkButton: UIButton!
-    
+   
     //--- Variables --------------------------------------
     
     var taskTableCell_VM : TasksTableCell_VM? {
