@@ -9,29 +9,21 @@
 import UIKit
 import CoreData
 
-enum MenuState : String{
-    case opened = "Open"
-    case closed = "close"
-    
-    mutating func changeState(){
-        switch self {
-        case .closed:
-            self  = .opened
-        case .opened:
-            self = .closed
-        }
-    }
-}
+//----- Global Variables ---------------------------
+var currentTasksList = ListName_ALL
 var showHideMenuClosure: ((Bool) -> ())?
 
+//--------------------------------------------------------
 class TasksCheckList_VC: UIViewController {
 
-    //--- Outlets----------------------------------------
+//--- Outlets----------------------------------------
     @IBOutlet weak var tasksTableView: UITableView!
     @IBOutlet weak var listsMenuView: UIView!
    
-    @IBOutlet weak var addTaskButton: UIBarButtonItem!
-    //--- Variables --------------------------------------
+    @IBOutlet weak var addTaskButton: UIButton!
+    @IBOutlet weak var listNameItem: UILabel!
+    
+//--- Variables --------------------------------------
     lazy var viewModel: TasksCheckList_VM = {
         return TasksCheckList_VM()
     }()
@@ -42,31 +34,20 @@ class TasksCheckList_VC: UIViewController {
         }
     }
     
-    func show_hide_Menu(){
-        if currentMenuStatus == .closed{
-            listsMenuView.isHidden = true
-        }else {
-            listsMenuView.isHidden = false
-        }
-    }
-    //--- View Methods------------------------------------
+//--- View Methods------------------------------------
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpList()
-        showHideMenuClosure = { [weak self] (flage) in
-            DispatchQueue.main.async {
-                if !flage {
-                    self?.currentMenuStatus.changeState()
-                }
-                self?.show_hide_Menu()
-            }
-        }
+        
+        viewPreparetion()
+        closuresImplementation()
+        getTasks()
     }
 
-    //--- Actions ----------------------------------------
-    @IBAction func typesMenuButtonClicked(_ sender: UIBarButtonItem) {
+    
+    
+//--- Actions ----------------------------------------
+    @IBAction func typesMenuButtonClicked(_ sender: UIButton) {
         currentMenuStatus.changeState()
-        print(currentMenuStatus)
     }
     
     @IBAction func addTaskButtonClicked(_ sender: Any) {
@@ -91,22 +72,23 @@ class TasksCheckList_VC: UIViewController {
     }
     
     
-    //--- Helper functions--------------------------------
-    func setUpList(){
-        
+//--- Helper functions--------------------------------
+    //--- set Up--------------------------
+    func viewPreparetion(){
         currentMenuStatus = .closed
-        print(currentMenuStatus)
-             
+        listNameItem.text = viewModel.listTitle
+        
         tasksTableView.delegate = self
         tasksTableView.dataSource = self
-        
+    }
+    
+    func closuresImplementation(){
         viewModel.reloadTableViewClosure = { [weak self] () in
             DispatchQueue.main.async {
+                self?.listNameItem.text = self?.viewModel.listTitle
                 self?.addTaskButton.isEnabled = true
                 self?.tasksTableView.reloadData()
                 self?.currentMenuStatus = .closed
-                print(self?.currentMenuStatus)
-               
             }
         }
         viewModel.hideAddButtonClousure = { [weak self] () in
@@ -114,10 +96,29 @@ class TasksCheckList_VC: UIViewController {
                 self?.addTaskButton.isEnabled = false
             }
         }
-        viewModel.getTasks { (tasks, error) in
-            print(error ?? "Success" )
+        showHideMenuClosure = { [weak self] (flage) in
+            DispatchQueue.main.async {
+                if !flage {
+                    self?.currentMenuStatus.changeState()
+                }
+                self?.show_hide_Menu()
+            }
         }
     }
+    
+    func getTasks(){
+        viewModel.getTasks { (tasks, error) in
+            print(error ?? " " )
+        }
+    }
+    
+    func show_hide_Menu(){
+          if currentMenuStatus == .closed{
+              listsMenuView.isHidden = true
+          }else {
+              listsMenuView.isHidden = false
+          }
+      }
 }
 
 //--- extensions-------------------------------------------------------

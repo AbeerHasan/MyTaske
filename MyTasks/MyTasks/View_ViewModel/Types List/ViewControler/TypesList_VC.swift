@@ -9,28 +9,29 @@
 import UIKit
 import CoreData
 
-let typeNotificationName = "ListTypeChanged"
+
 
 class TypesList_VC: UIViewController {
 
-    //--- Outlets----------------------------------------
+//--- Outlets----------------------------------------
     @IBOutlet weak var typesTableView: UITableView!
     @IBOutlet weak var typeNameTextField: UITextField!
 
     @IBOutlet weak var menueContainerView: UIView!
-    //--- Variables --------------------------------------
+
+//--- Variables --------------------------------------
     lazy var viewModel: TypesList_VM = {
         return TypesList_VM()
     }()
     
-    //--- View Methods------------------------------------
+//--- View Methods------------------------------------
     override func viewDidLoad() {
         super.viewDidLoad()
          
         setUp()
     }
     
-    //--- Actions ----------------------------------------
+//--- Actions ----------------------------------------
     @IBAction func addTypeButtonClicked(_ sender: Any) {
         if typeNameTextField.text != " " && typeNameTextField.text != "" {
             viewModel.addType(name: typeNameTextField.text!) { (error) in
@@ -40,7 +41,7 @@ class TypesList_VC: UIViewController {
         typeNameTextField.text = ""
     }
     
-    //--- Helper functions--------------------------------
+//--- Helper functions--------------------------------
     func setUp(){
         typesTableView.delegate = self
         typesTableView.dataSource = self
@@ -55,13 +56,12 @@ class TypesList_VC: UIViewController {
         }
         
         viewModel.getTypes { (types, error) in
-            print(error ?? "Error in getting Types")
+            print(error ?? " ")
         }
         //---- Hide the menue after clicking on the screen---
         let tap = UITapGestureRecognizer(target: self, action: #selector(hideMenue))
         self.menueContainerView.addGestureRecognizer(tap)
-
-        }
+    }
         
     @objc func hideMenue(){
         showHideMenuClosure?(false)

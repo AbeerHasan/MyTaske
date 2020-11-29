@@ -2,7 +2,7 @@
 //  TypesList_VM.swift
 //  MyTasks
 //
-//  Created by Mohammed Mohsin Sayed on 11/23/20.
+//  Created by Abeer Abbas Saber on 11/23/20.
 //  Copyright © 2020 Abeer Abbas Saber. All rights reserved.
 //
 
@@ -44,9 +44,10 @@ class TypesList_VM {
     
     func cellClicked(index: Int){
         currentTasksList = types[index].name
-        NotificationCenter.default.post(name: NSNotification.Name(typeNotificationName), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(ListTypeChanged_Notification_Name), object: nil)
     }
-//-------------------
+    
+//-------- CoreData Functions ------------------------------------------
     func getTypes(completion: @escaping ([Type] , String?) -> ()){
         coreDataManager.getAllTypes { (types, error) in
            self.types = types
@@ -63,6 +64,7 @@ class TypesList_VM {
             coreDataManager.addType(name: name) { (type, error) in
                 self.types.append(type)
                 self.typeCellViewModels.append(self.createTypeCellViewModel(name: name))
+                completion(error)
             }
         }else {
             completion("Please write a name")
@@ -70,10 +72,12 @@ class TypesList_VM {
     }
     
    func removeType(index: Int){
-        coreDataManager.removeType(type: types[index]) { (error) in
-            print(error ?? "Error removing type")
-            self.types.remove(at: index)
-            self.typeCellViewModels.remove(at: index)
+        if types[index].name != ListName_ALL && types[index].name != ListName_FINISHED {
+            coreDataManager.removeType(type: types[index]) { (error) in
+               print(error ?? "Success")
+               self.types.remove(at: index)
+               self.typeCellViewModels.remove(at: index)
+            }
         }
    }
     

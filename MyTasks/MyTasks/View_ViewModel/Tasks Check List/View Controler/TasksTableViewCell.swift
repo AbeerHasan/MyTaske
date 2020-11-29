@@ -9,10 +9,7 @@
 import UIKit
 import CoreData
 
-enum TaskStatus : String{
-    case finished = "checkmark.square"
-    case unfinished = "square"
-}
+
 
 class TasksTableViewCell: UITableViewCell {
     
@@ -29,23 +26,12 @@ class TasksTableViewCell: UITableViewCell {
             checkButtonSetup()
         }
     }
-    //--- View Methods------------------------------------
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-    }
     
     //--- Actions ----------------------------------------
     @IBAction func checkButtonClicked(_ sender: Any) {
-       // viewModel.updateTask(index: taskTableCell_VM?.index ?? 0, content: taskTableCell_VM?.content ?? "", isDone: !(taskTableCell_VM?.isDone ?? true))
-        taskTableCell_VM?.updateTask(content: taskTableCell_VM?.content ?? "", isdone: !(taskTableCell_VM?.isDone ?? true))
+         taskTableCell_VM?.updateTask(content: taskTableCell_VM?.content ?? "", isdone: !(taskTableCell_VM?.isDone ?? true))
         
-        checkButtonSetup()
+         checkButtonSetup()
     }
     
     //--- Helper functions--------------------------------

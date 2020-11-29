@@ -9,12 +9,16 @@
 import Foundation
 import CoreData
 
-var currentTasksList = "All"
+
 
 class TasksCheckList_VM {
     
 //---- Variables -----------------------------------------------------------
     let coreDataManager: CoreDataProtocol
+    
+    var listTitle: String {
+        return currentTasksList
+    }
     
     private var tasks: [Task] = [Task]()
     
@@ -29,15 +33,19 @@ class TasksCheckList_VM {
     }
     
     var reloadTableViewClosure: (()->())?
-    var hideAddButtonClousure: (() -> ())?
-    
+    var hideAddButtonClousure: (()->())?
+
+//----- Initialization --------------------------------------------------------
     init(coreDataManager: CoreDataProtocol = CoreDataManager()) {
-        self.coreDataManager = coreDataManager
-          NotificationCenter.default.addObserver(self , selector: #selector(reloadTasks), name: NSNotification.Name(typeNotificationName), object: nil)
-        print("init Tasks \(tasks)")
         
+        self.coreDataManager = coreDataManager
+        
+        NotificationCenter.default.addObserver(self , selector: #selector(reloadTasks), name: NSNotification.Name(ListTypeChanged_Notification_Name), object: nil)
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 //--- Tasks TableViw and Cell Setup Functions -------------------------------
     
     func createTaskCellViewModel(task: Task) -> TasksTableCell_VM {
@@ -53,18 +61,19 @@ class TasksCheckList_VM {
     @objc func reloadTasks(){
         getTasks { (tasks, error) in
             self.reloadTableViewClosure?()
-            if currentTasksList == "Finished" {
+            if currentTasksList == ListName_FINISHED {
                  self.hideAddButtonClousure?()
             }
         }
     }
-//--------------------------------------------
+
+//-------- CoreData Functions ------------------------------------------
     func getTasks(completion: @escaping ([Task] , String?) -> ()){
         var format = "isDone = No"
         
-        if currentTasksList == "Finished" {
+        if currentTasksList == ListName_FINISHED {
             format = "isDone = Yes"
-        }else if currentTasksList == "All" {
+        }else if currentTasksList == ListName_ALL {
             format = "isDone = No"
         }else {
             format = "type.name CONTAINS '\(currentTasksList)' AND isDone = No "
@@ -86,7 +95,7 @@ class TasksCheckList_VM {
     func addTask(content: String, completion: @escaping (_ error: String) -> ()){
         if content != "" && content != " " {
             self.coreDataManager.addTask(content: content, typeName: currentTasksList) { (task,error) in
-                completion("********** \(error)")
+                completion(error)
                 self.tasks.append(task)
                 self.taskCellViewModels.append(self.createTaskCellViewModel(task: task))
             }
